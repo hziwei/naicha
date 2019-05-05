@@ -1,0 +1,24 @@
+﻿ 
+
+
+@font-face {
+    font-family: 'xlight-title';
+    src: url('../fonts/avantgardelt-bold.eot');
+    src: url('../fonts/avantgardelt-bold.eot') format('embedded-opentype'),
+         url('../fonts/avantgardelt-bold.woff') format('woff2'),
+         url('../fonts/avantgardelt-bold.woff') format('woff'),
+         url('../fonts/avantgardelt-bold.ttf') format('truetype'),
+         url('../fonts/avantgardelt-bold.svg#uni_sansheavy_caps') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+
+@font-face {
+  font-family: 'iconfont';  /* project id 244459 */
+  src: url('../fonts/font_ij1vjx42xario1or.eot');
+  src: url('../fonts/font_ij1vjx42xario1or.eot') format('embedded-opentype'),
+  url('../fonts/font_ij1vjx42xario1or.woff') format('woff'),
+  url('../fonts/font_ij1vjx42xario1or.ttf') format('truetype'),
+  url('../fonts/font_ij1vjx42xario1or.svg#iconfont') format('svg');
+}             

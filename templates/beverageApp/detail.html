@@ -1,0 +1,192 @@
+{% extends 'beverageApp/base.html' %}
+{% block content %}
+    <script type="text/javascript">
+        $(function () {
+            {# 动态修改数量 #}
+            $('.num').children('b').click(function () {
+                if($(this).text()==$('.num b:eq(0)').text()){
+                    if($('.num input:eq(0)').val()-1!=0){
+                        $('.num input:eq(0)').val($('.num input:eq(0)').val()-1)
+                    }
+                }else if ($(this).text()==$('.num b:eq(1)').text()){
+                    $('.num input:eq(0)').val(parseInt($('.num input:eq(0)').val())+1)
+                }
+            });
+            {# ajax提交购买信息 #}
+            $('input:button:eq(1)').click(function () {
+                var price = parseFloat($('.product_info:eq(0)').text());
+                var number = $('.product_info:eq(1)').val();
+                var cup = $('.product_info:eq(2)').text();
+                var rebate = parseFloat($('.product_info:eq(3)').text())/10;
+                var card_id = $('#card_id').text();
+                if (rebate){
+
+                }else {
+                    rebate=1.0
+                }
+                $.post('/product/{{ product.id }}/',{'csrfmiddlewaretoken':"{{ csrf_token }}",'number': number,'rebate': rebate,'card_id':card_id,'price':price},function (result,state,xhr) {
+                    alert(result.msg);
+                    $('.yincang').css('display','none');
+                    location.href='/product/{{ product.id }}'
+
+                })
+            });
+            {# 显示会员验证页面 #}
+            $('input:button:eq(0)').click(function () {
+                $('.yincang').css('display','block')
+            });
+            {# 提交会员信息 #}
+            $('input:button:eq(2)').click(function () {
+                var card = $('.card_yan:eq(0)').val();
+                var pass = $('.card_yan:eq(1)').val();
+                $.post('/product/{{ product.id }}/',{'csrfmiddlewaretoken':"{{ csrf_token }}",'card': card, 'pass': pass},function (result,state,xhr) {
+                    alert(result.msg);
+                    if (result.msg=='验证成功...'){
+                        {#console.log(parseFloat($('.product_info:eq(3)').text()));#}
+                        var rebate = parseFloat($('.product_info:eq(3)').text())/10;
+                        if ((rebate < result.rebate) && (rebate!=0)){
+                            $('.product_info:eq(3)').text();
+                            $('.yincang').css('display','none');
+                            $('#card_id').text(result.id)
+                        }else {
+                            $('.product_info:eq(3)').text(result.rebate*10+'折');
+                            $('.yincang').css('display','none');
+                            $('#card_id').text(result.id)
+                            }
+                    }
+                })
+            });
+
+            if($('.product_info:eq(3)').text()=='1'){
+                $('.product_info:eq(3)').text('无折扣')
+            }else{
+                $('.product_info:eq(3)').text(parseFloat($('.product_info:eq(3)').text())*10+'折')
+            }
+            {# 修改杯子显示文字 #}
+            if($('.product_info:eq(2)').children('option:eq(0)').text()=='1'){
+                $('.product_info:eq(2)').children('option:eq(0)').text('大杯');
+                $('.product_info:eq(0)').text($('.product_info:eq(2)').children('option:eq(0)').val());
+                console.log($('.product_info:eq(2)').children('option:eq(0)').val())
+            };
+            if($('.product_info:eq(2)').children('option:eq(1)').text()=='2'){
+                $('.product_info:eq(2)').children('option:eq(1)').text('中杯');
+                if($('.product_info:eq(2)').children('option:eq(0)').text()=='大杯'){
+
+                }else {
+                    $('.product_info:eq(0)').text($('.product_info:eq(2)').children('option:eq(1)').val());
+                }
+            };
+            if($('.product_info:eq(2)').children('option:eq(2)').text()=='3'){
+                $('.product_info:eq(2)').children('option:eq(2)').text('小杯')
+                if($('.product_info:eq(2)').children('option:eq(0)').text()=='大杯'){
+
+                }else if(($('.product_info:eq(2)').children('option:eq(1)').text()=='中杯')){
+
+                }else {
+                     $('.product_info:eq(0)').text($('.product_info:eq(2)').children('option:eq(2)').val());
+                }
+            };
+            {# 选择杯子不同价格改变 #}
+            $('.product_info:eq(2)').change(function () {
+                $('.product_info:eq(0)').text($(this).val())
+            });
+        });
+    </script>
+    <div style="width: 1200px;margin: 0 auto;">
+        <ul class="work-wrap product-wrap product-list col-4 item-margin-line clear" style="position: relative" >
+            {# 图片 #}
+            <li class="work-item work-item-zoom"style="cursor: pointer;width: 345px;">
+                <div class="work-item-inner">
+                    <div class="work-item-container">
+                        <div class="work-image">
+                            <img style="height: 280px;width: 345px;" src="/{{ product.product_img }}" />
+                        </div>
+                    </div>
+                </div>
+            </li>
+            {# 产品信息 #}
+            <li class="work-item work-item-zoom" style="width: 385px;height: 280px;font-family: 'Microsoft YaHei';">
+                {# 产品名 #}
+                <div class="work-info-inner" style="margin: 0px 40px;">
+                    <span class="bar"></span>
+                    <p style="color: #000;font-size: 20px">产品名<b style="margin-left: 50px;">{{ product.product_name }}</b></p>
+                </div>
+                {# 购买价格 #}
+                <div class="work-info-inner" style="margin: 0px 40px;">
+                    <span class="bar"></span>
+                    <p style="color: #000;font-size: 20px;">价格<b class="product_info" style="margin-left: 70px;">{{ product.product_price }}</b></p>
+                </div>
+                {# 购买数量 #}
+                <div class="work-info-inner" style="margin: 0px 40px;">
+                    <span class="bar"></span>
+                    <p class="num" style="color: #000;font-size: 20px">购买数量
+                        <b style="cursor: pointer;width: 26px;height: 26px;border: 1px solid #cccccc;line-height: 26px;padding: 0;text-align: center;background: #ededed;overflow: hidden;font-family: tb-iconfont!important;color: #3c3c3c; margin-left: 30px">➖</b>
+                        <input class="product_info" style="width: 50px;height: 30px;font-size:26px;text-align: center" value="1">
+                        <b style="cursor: pointer;width: 26px;height: 26px;border: 1px solid #cccccc;line-height: 26px;padding: 0;text-align: center;background: #ededed;overflow: hidden;font-family: tb-iconfont!important;color: #3c3c3c;">➕</b>
+                    </p>
+                </div>
+                {# 杯子种类 #}
+                <div class="work-info-inner" style="margin: 0px 40px;">
+                    <span class="bar"></span>
+                    <p style="color: #000;font-size: 20px">杯子
+                        <select class="product_info"style="height: 30px;margin-left: 70px;">
+                            {% for item in product.cup.all %}
+                                <option value="{{ item.price }}">{{ item.cup_size }}</option>
+                            {% endfor %}
+                        </select>
+                    </p>
+                </div>
+                {# 折扣 #}
+                <div class="work-info-inner" style="margin: 0px 40px;">
+                    <span class="bar"></span>
+                    <p style="color: #000;font-size: 20px">折扣
+                        <b class="product_info"style="cursor: pointer;width: 26px;height: 26px;border: 1px solid #cccccc;line-height: 26px;padding: 0;text-align: center;background: #ededed;overflow: hidden;font-family: tb-iconfont!important;color: #3c3c3c; margin-left: 70px">{{ rebate }}</b>
+                    </p>
+                </div>
+                {# 立即购买 #}
+                <div class="work-info-inner" style="margin: 10px 40px;">
+                    <span class="bar"></span>
+                    <p style="color: #000;width: 100px;width: auto;"><input type="button" value="会员验证"style="margin-right: 20px; font-size: 20px;cursor: pointer;"><input type="button"value="立即购买"style="font-size: 20px;cursor: pointer;"></p>
+                </div>
+            </li>
+            {# 会员验证页面 #}
+            <li class="work-item work-item-zoom yincang" style="width: 385px;height: 280px;font-family: 'Microsoft YaHei';display: none;background: #daf4ff;">
+                {# 会员验证 #}
+                <div class="work-info-inner" style="margin: 0px 130px;">
+                    <span class="bar"></span>
+                    <p style="color: #000;font-size: 20px">会员验证</p>
+                </div>
+                {# 请输入会员卡号 #}
+                <div class="work-info-inner" style="margin: 0px 40px;">
+                    <span class="bar"></span>
+                    <p style="color: #000;font-size: 20px">会员卡号
+                        <b class="product_info"style="cursor: pointer;width: 26px;height: 26px;border: 1px solid #cccccc;line-height: 26px;padding: 0;text-align: center;background: #ededed;overflow: hidden;font-family: tb-iconfont!important;color: #3c3c3c; margin-left: 30px">
+                            <input class="card_yan" type="text"value=""style="font-size: 20px;cursor: pointer;width: 150px;">
+                        </b>
+                    </p>
+                </div>
+                {# 请输入密码 #}
+                <div class="work-info-inner" style="margin: 0px 40px;">
+                    <span class="bar"></span>
+                    <p style="color: #000;font-size: 20px">密码
+                        <b class="product_info"style="cursor: pointer;width: 26px;height: 26px;border: 1px solid #cccccc;line-height: 26px;padding: 0;text-align: center;background: #ededed;overflow: hidden;font-family: tb-iconfont!important;color: #3c3c3c; margin-left: 70px">
+                            <input class="card_yan" type="password"value=""style="font-size: 20px;cursor: pointer;width: 150px;">
+                        </b>
+                    </p>
+                </div>
+                <div class="work-info-inner" style="margin: 60px 130px;">
+                    <span class="bar"></span>
+                    <p style="color: #000;width: 100px;width: auto;">
+                        <input type="button" value="会员验证"style="margin-right: 20px; font-size: 20px;cursor: pointer;">
+                        <b id="card_id" style="display: none;"></b>
+                    </p>
+                </div>
+            </li>
+            {# 产品详情 #}
+            <li class="work-item work-item-zoom" style="width: auto;color: #000;">
+                <h1 style="color: #000;margin-top: 20px">产品详情</h1>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ product.product_body }}
+            </li>
+        </ul>
+    </div>
+{% endblock %}

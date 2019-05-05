@@ -1,0 +1,37 @@
+{% extends 'beverageApp/base.html' %}
+
+{% block content %}
+    <script type="text/javascript">
+    $(function () {
+        var num = parseInt($('.rebate').length);
+        console.log(num);
+        for (var i=0;i<num;i++){
+            var rebate = parseFloat($('.rebate').eq(i).text());
+            $('.rebate').eq(i).text('立享'+rebate*10+'折')
+        }
+    })
+    </script>
+    <ul class="work-wrap product-wrap product-list col-4 item-margin-line clear" style="position: relative" >
+        {% for item in product %}
+            <li class="work-item work-item-zoom">
+                <a href='/product/{{ item.id }}/'>
+                    <div class="work-item-inner">
+                        <div class="work-item-container">
+                            <div class="work-image">
+                                <img src="/{{ item.product_img }}" style="width: 421px; height: 275.56px;" >
+                            </div>
+                            <div class="work-info caption">
+                                <div class="work-info-inner">
+                                    <span class="bar"></span>
+                                    <h4 class="en">#{{ promotion.0.promotion_title }}#</h4>
+                                    <h2 class="rebate"style="color: red;">{{ promotion.0.product_rebate }}</h2>
+                                    <h1>{{ item.product_name }}</h1>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}

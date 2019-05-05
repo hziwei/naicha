@@ -1,0 +1,33 @@
+{% extends 'beverageApp/base.html' %}
+{#{% block promotion  %}#}
+{#    <div id="home-slide" style="height: 369px">#}
+{#            {% for item in Recommend %}#}
+{#                <a class="slide-item" style="height: 369px;background-image:url({{ item.recommend_product.product_img}})"></a>#}
+{#            {% endfor %}#}
+{#    </div>#}
+{#{% endblock  %}#}
+
+{% block content %}
+      <ul class="work-wrap product-wrap product-list col-4 item-margin-line clear" style="position: relative" >
+          {% for foo in product %}
+            <li class="work-item work-item-zoom">
+                <a href='/product/{{ foo.id }}/'>
+                    <div class="work-item-inner" >
+                        <div class="work-item-container" >
+                            <div class="work-image">
+                                <img src='/{{ foo.product_img }}' style="width: 100%; height: 275.56px;"/>
+                            </div>
+                            <div class="work-info caption" >
+                                <div class="work-info-inner">
+                                    <h4 class="en">{{ foo.product_name }}</h4>
+                                    <span class="bar"></span>
+                                    <h2>{{ foo.product_name }}</h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </li>
+      {% endfor %}
+        </ul>
+{% endblock %}

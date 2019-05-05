@@ -1,0 +1,111 @@
+{% extends 'beverageApp/base.html' %}
+{% block content %}
+    <script type="text/javascript">
+    (function(window,document,undefined){
+var hearts = [];
+window.requestAnimationFrame = (function(){
+return window.requestAnimationFrame ||
+window.webkitRequestAnimationFrame ||
+window.mozRequestAnimationFrame ||
+window.oRequestAnimationFrame ||
+window.msRequestAnimationFrame ||
+function (callback){
+setTimeout(callback,1000/60);
+}
+})();
+init();
+function init(){
+css(".heart{width: 10px;height: 10px;position: fixed;background: #f00;transform: rotate(45deg);-webkit-transform: rotate(45deg);-moz-transform: rotate(45deg);}.heart:after,.heart:before{content: '';width: inherit;height: inherit;background: inherit;border-radius: 50%;-webkit-border-radius: 50%;-moz-border-radius: 50%;position: absolute;}.heart:after{top: -5px;}.heart:before{left: -5px;}");
+attachEvent();
+gameloop();
+}
+function gameloop(){
+for(var i=0;i<hearts.length;i++){
+if(hearts[i].alpha <=0){
+document.body.removeChild(hearts[i].el);
+hearts.splice(i,1);
+continue;
+}
+hearts[i].y--;
+hearts[i].scale += 0.004;
+hearts[i].alpha -= 0.013;
+hearts[i].el.style.cssText = "left:"+hearts[i].x+"px;top:"+hearts[i].y+"px;opacity:"+hearts[i].alpha+";transform:scale("+hearts[i].scale+","+hearts[i].scale+") rotate(45deg);background:"+hearts[i].color;
+}
+requestAnimationFrame(gameloop);
+}
+function attachEvent(){
+var old = typeof window.onclick==="function" && window.onclick;
+window.onclick = function(event){
+old && old();
+createHeart(event);
+}
+}
+function createHeart(event){
+var d = document.createElement("div");
+d.className = "heart";
+hearts.push({
+el : d,
+x : event.clientX - 5,
+y : event.clientY - 5,
+scale : 1,
+alpha : 1,
+color : randomColor()
+});
+document.body.appendChild(d);
+}
+function css(css){
+var style = document.createElement("style");
+style.type="text/css";
+try{
+style.appendChild(document.createTextNode(css));
+}catch(ex){
+style.styleSheet.cssText = css;
+}
+document.getElementsByTagName('head')[0].appendChild(style);
+}
+function randomColor(){
+return "rgb("+(~~(Math.random()*255))+","+(~~(Math.random()*255))+","+(~~(Math.random()*255))+")";
+}
+})(window,document);
+
+</script>
+
+
+    <style type="text/css">
+      #txt{
+          margin: 0 auto;
+            width:940px;
+            background: url("/static/images/55.png") no-repeat ;
+            background-size:cover;
+            min-height: 235px;
+
+    }</style>
+    <div style="font-size: large ;text-align:center;color: black ">
+    <h1>
+    <span>
+        <font  >
+            {{ bss.conte_title }}
+        </font>
+    </span>
+    </h1>
+</div>
+<div id="txt" style="text-align: center;margin: 10px auto 70px auto;color: #f5f5f5">
+   ftyyfyguiguguigiugyvyvuyvuyvyvvuyvu
+    <br >
+    <script type="text/javascript">
+        $(function () {
+            $('#story').children('p').eq(0).children('font').css('color','red');
+            $('#story').children('p').eq(1).children('font').css('color','green');
+            $('#story').children('p').eq(2).children('font').css('color','blue');
+            $('#story').children('p').eq(3).children('font').css('color','yellow');
+            $('#story').children('p').eq(4).children('font').css('color','pink');
+            $('#story').children('p').eq(5).children('font').css('color','#1ab3e5');
+        });
+    </script>
+     <div  id='story'style="margin: 10px 0 70px 0;color: red;">
+         {% for item in css %}
+             <p style="margin-left: 60px;margin-right: 60px "><font  size="2" color="green" >{{ item }}</font></p>
+         {% endfor %}
+     </div>
+</div>
+{% endblock %}

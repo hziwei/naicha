@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>奶茶店员登陆</title>
+    <script type="text/javascript" src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <link rel="stylesheet" href="/static/css/login.css">
+    <script type="text/javascript">
+        $(function () {
+            $('.logC').on('click',function () {
+                if($('#usertext').val()=='' || $('#passtext').val() == ''){
+                    alert('你输入的账号或者密码为空！');
+                    return false
+                }
+                else {
+                    // 判断数据类型正确，向后台发送数据，判断请求的数据是否合法
+                    $.ajax({
+                        method:'post',
+                        url:'/employee/',
+                        data:$('#formText').serialize(),
+                        dataType:'json',
+                        success:function (result) {
+                            $('#usertext').val('');
+                            $('#passtext').val('');
+                            alert(result.msg);
+                            if (result.msg=='登陆成功!'){
+                                console.log('dfs');
+                                location.href='/employee'
+                            }
+
+                        }
+                    })
+                }
+            })
+        })
+    </script>
+</head>
+<body>
+    <div class="wrap" id="wrap" >
+        <div class="logGet"  style="width:368px;height:408px;display:inline-block;">
+            <!-- 头部提示信息 -->
+            <div class="logD logDtip">
+                <p class="p1">登录</p>
+            </div>
+            <!-- 输入框 -->
+            <form id="formText" method="post">
+                {% csrf_token %}
+                <div class="lgD">
+                    <img src="/static/images/username-input.png" width="30" height="30" alt=""/>
+                    <input id="usertext" type="text" name="usertext" placeholder="输入用户名" />
+                </div>
+                <div class="lgD">
+                    <img src="/static/images/password-input.png" width="30" height="30" alt=""/>
+                    <input id="passtext" type="password" name="passtext" placeholder="输入用户密码" />
+                </div>
+                <div class="logC" style="text-align: center">
+                    <input type="button" value="登陆">
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

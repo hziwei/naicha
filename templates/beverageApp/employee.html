@@ -1,0 +1,1138 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+{#    <meta http-equiv="refresh" content="2">#}
+    <title>店员页面</title>
+    <style>
+        body{
+            color: #ffffff;
+        }
+        body,div,h2,ul,li{
+            margin: 0;
+            padding: 0;
+        }
+        #contentTb
+        {
+            width: 100%;
+            min-height: 25px;
+            line-height: 25px;
+            text-align: center;
+            border-collapse: collapse;
+            margin: 0px auto;
+
+
+        }
+         #contentTb tr td
+        {
+            border:1px solid #000000;
+        }
+        a:hover{
+            color: red;
+        }
+        .type{
+            font-size: 20px;
+            text-align: center;
+            cursor: pointer;
+            padding: 10px 0;
+        }
+        .type:hover{
+            background: #ee7700;
+        }
+        .type1:hover{
+            background: #ee7700;
+        }
+        .type1{
+            line-height: 40px;
+            padding: 0 30px;
+            font-size: 17px;
+            float: left;
+            cursor: pointer;
+        }
+        .type2:hover{
+            background: #ee7700;
+        }
+        .type2{
+            line-height: 40px;
+            padding: 0 30px;
+            font-size: 17px;
+            float: left;
+            cursor: pointer;
+        }
+    </style>
+    <script type="text/javascript" src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <script type="text/javascript"src="/static/js/highcharts.js"></script>
+    {# 购买状态 #}
+    <script type="text/javascript">
+        $(function () {
+             for(var item in $('.state').text()){
+                 if($('.state').eq(item).text()=='0'){
+                     $('.state').eq(item).text('未完成')
+                 }else if($('.state').eq(item).text()=='1'){
+                     $('.state').eq(item).text('已完成')
+                 }
+             }
+             {#$('input:button:lt(2)').click(function () {#}
+             {#    $.get('/employee/',{'state':0},function (result,state,xhr) {#}
+             {#        console.log(result)})});#}
+             {#$('input:button:gt(2)').click(function () {#}
+             {#    console.log($(this).parent('tr').text());#}
+             {#    $.post('/employee/',{'csrfmiddlewaretoken':"{{ csrf_token }}",'id': $(this).next('b').text() })});#}
+        })
+    </script>
+</head>
+<body style="background:#333333;height: 100%;">
+<div style="height: 10%;background: #000000;">
+    <div style="display: inline-block;"><img src="/static/images/logo.jpg"style="width: 56px;height: 56px;"></div>
+    <div style="display: inline-block;">
+        <h2 style="color: yellow;">店员管理页面</h2>
+        <b style="color: #f3f3f3;">Clerk Management Pa </b>
+    </div>
+    <div style="display: inline-block;float: right;">
+
+        <li style="list-style: none;float: right;color: #f3f3f3;">欢迎你:{{ name }}&nbsp;&nbsp;&nbsp;&nbsp;<a href="/logout/" style="cursor: pointer;color: #daf4ff;">注销</a></li>
+    </div>
+</div>
+{# 侧方事件的生成 #}
+<script type="text/javascript">
+    {# 定时刷新未完成订单 #}
+    setInterval(function () {
+                 $.get('/reportforms/',{'state':200},function (result,state,xhl) {
+                     var table =$('table').html('<tr class="contentTb">' +
+                         '            <td>商品编号</td>' +
+                         '            <td>产品名称</td>' +
+                         '            <td>单价</td>' +
+                         '            <td>折扣</td>' +
+                         '            <td>数量</td>' +
+                         '            <td>合计</td>' +
+                         '            <td>状态</td>' +
+                         '            <td>提交</td>' +
+                         '        </tr>');
+                     $('.type:eq(1)').children('span').text('(0)');
+                     for (var i in result.rep){
+                         $('.type:eq(1)').children('span').text('('+(parseInt(i)+1)+')');
+                         table.append('<tr class="contentTb">' +
+                             '            <td>'+result.rep[i].proudect_id+'</td>' +
+                             '            <td>'+result.rep[i].product+'</td>' +
+                             '            <td>'+result.rep[i].price+'</td>' +
+                             '            <td>'+result.rep[i].rebate+'</td>' +
+                             '            <td>'+result.rep[i].number+'</td>' +
+                             '            <td>'+result.rep[i].z_price+'</td>' +
+                             '            <td class="state">'+result.rep[i].state+'</td>' +
+                             '            <td><input id="tijiao"type="button"value="提交"style="width: 100%;"><b style="display: none;">'+result.rep[i].id+'</b></td>' +
+                             '        </tr>')
+                     }
+                     for(var item in $('.state').text()){
+                         if($('.state').eq(item).text()=='0'){
+                             $('.state').eq(item).text('未完成')
+                         }else if($('.state').eq(item).text()=='1'){
+                             $('.state').eq(item).text('已完成')
+                         }
+                     }
+                     $('#tijiao').click(function () {
+                     $.post('/reportforms/',{'csrfmiddlewaretoken':"{{ csrf_token }}",'id': $(this).next('b').text()},function (result,state,shr) {
+                         alert(result.msg)
+                            })
+                        });
+                     {#console.log(window.document);#}
+                     {#console.log('/<body style="background:#daf4ff;">/'.exec(result));#}
+                     {#console.log(result[result.search('<body style="background:#daf4ff;">')])#}
+                 });
+
+                 },
+                 2000);
+    {# 改变订单状态 #}
+    $('#tijiao').click(function () {
+                 console.log($(this).parent('tr').text());
+                 $.post('/reportforms/',{'csrfmiddlewaretoken':"{{ csrf_token }}",'id': $(this).next('b').text()},function (result,state,shr) {
+                     alert(result.msg)
+                 })
+             });
+    {# 点击相应的选项框显示相应的内容 #}
+    $(function () {
+        $('.type').click(function () {
+        if($(this).val()=='1'){
+            $('.body').css('display','none');
+            $('.body:eq(0)').css('display','inline-block');
+        }else if($(this).val()=='2'){
+            $('.body').css('display','none');
+            $('.body:eq(1)').css('display','inline-block');
+        }else if($(this).val()=='3'){
+            $('.body').css('display','none');
+            $('.body:eq(2)').css('display','inline-block');
+        }
+    })
+    });
+
+</script>
+<div style="position: relative;">
+    {# 侧方导航栏 #}
+    <div style="height: 665px;background: #444444;width: 20%;display: inline-block;position: absolute;top: 0;">
+        <ul style="background: #444444;list-style: none;padding-top: 20px;">
+            <li class="type"value="1">
+                已完成订单
+            </li>
+            <li class="type"value="2">
+                未完成订单<span style="color: red;">(0)</span>
+            </li>
+            <li class="type"value="3">
+                店员信息
+            </li>
+        </ul>
+    </div>
+    {# 显示时间 #}
+    <script type="text/javascript">
+        $(function () {
+            var now = new Date();
+            var day = (('0'+now.getDate()).slice(-2));
+            var month = (('0'+(now.getMonth()+1)).slice(-2));
+            if($('.data:eq(0)').val()==''){
+                var today = now.getFullYear()+"-"+(month)+"-"+(day);
+                $('.data:eq(0)').val(today);
+            }
+            if($('.data:eq(1)').val()==''){
+                var today = now.getFullYear()+"-"+(month);
+                $('.data:eq(1)').val(today);
+            }
+        })
+    </script>
+    {# 已完成订单 #}
+    <div class="body" style="display: inline-block;width: 79%;height: 500px;float: right;">
+        <div style="height: 40px;background: #444444;">
+            <ul style="list-style: none">
+                <li class="type1"style="margin-left: 30px">日信息</li>
+                <li class="type1">月信息</li>
+                <li class="type1">年信息</li>
+            </ul>
+        </div>
+
+        {# 动态查看购买信息 #}
+        <script type="text/javascript">
+            $(function () {
+                $('.type1:eq(0)').css('background','#ee7700');
+                $('.type1').click(function () {
+                        $('.type1').css('background','#444');
+                        $('.cont').css('display','none');
+                        $(this).css('background','#ee7700');
+                        if($(this).text()=='日信息'){
+                            $('.cont:eq(0)').css('display','block');
+                        }else if($(this).text()=='月信息'){
+                            $('.cont:eq(1)').css('display','block');
+                        }else if($(this).text()=='年信息'){
+                            $('.cont:eq(2)').css('display','block');
+                        }
+
+                    })
+                })
+        </script>
+        {# 日信息 #}
+        <div class="cont" style="display: block">
+            {# 显示信息 #}
+            <span style="display: block;color: #ffffff;margin: 20px 0;">日期:&nbsp&nbsp<input class="data" type="date"value=""style="display: inline-block;border-radius: 17px;background: #444444;color: #ffffff;"></span>
+            <div id="number" style="width: 49%;height: 100%;display: inline-block;">
+            </div>
+            <div id="price" style="width:49%;height: 100%;display: inline-block;"></div>
+        </div>
+        {# 月信息 #}
+        <div class="cont" style="display: none">
+            {# 显示信息 #}
+            <span style="display: block;color: #ffffff;margin: 20px 0;">日期:&nbsp&nbsp<input class="data" type="month"value=""style="display: inline-block;border-radius: 17px;background: #444444;color: #ffffff;"></span>
+            <div id="number_month" style="width: 99%;height: 270px;display: inline-block;">
+            </div>
+            <div id="price_month" style="width:99%;height: 270px;display: inline-block;margin-top: 20px"></div>
+        </div>
+        {# 年信息 #}
+        <div class="cont" style="display: none">
+            {# 显示信息 #}
+            <span style="display: block;color: #ffffff;margin: 20px 0;">日期:&nbsp&nbsp<select class="data" type="month"value=""style="display: inline-block;border-radius: 17px;background: #444444;color: #ffffff;"></select></span>
+            <div id="number_year" style="width: 49%;height: 100%;display: inline-block;">
+            </div>
+            <div id="price_year" style="width:49%;height: 100%;display: inline-block;"></div>
+        </div>
+</div>
+    {# 未完成订单 #}
+    <div class="body" style="display:none;width: 79%;height: 500px;float: right;">
+        <table id="contentTb">
+            <tr class="contentTb">
+                <td>商品编号</td>
+                <td>产品名称</td>
+                <td>单价</td>
+                <td>折扣</td>
+                <td>数量</td>
+                <td>合计</td>
+                <td>状态</td>
+                <td>提交</td>
+            </tr>
+            {% for item in rep %}
+                <tr class="contentTb">
+                <td>{{ item.proudect_id}}</td>
+                <td>{{ item.product }}</td>
+                <td>{{ item.price }}</td>
+                <td>{{ item.rebate }}</td>
+                <td>{{ item.number }}</td>
+                <td>{{ item.z_price }}</td>
+                <td class="state">{{ item.state }}</td>
+                <td><input id="tijiao"type="button"value="提交"style="width: 100%;"><b style="display: none;">{{ item.id }}</b></td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    {# 店员页面 #}
+    <div class="body" style="display:none;width: 79%;height: 500px;float: right;">
+        <div style="height: 40px;background: #444444;">
+            <ul style="list-style: none">
+                <li class="type2"style="margin-left: 30px">修改个人信息</li>
+                <li class="type2">补全个人信息</li>
+            </ul>
+        </div>
+        <div style="display: block;">
+            <ul style="list-style: none;display: block;">
+                <li style="float: left;width: 40%;text-align: right;padding-right: 20px;margin-top: 50px;font-size: 16px;">请输入用户名:</li>
+                <li style="float: left;width: 50%;margin-top: 50px;"><input type="text"style="width: 200px;height: 30px;"></li>
+            </ul>
+            <ul style="list-style: none">
+                <li style="float: left;width: 40%;text-align: right;padding-right: 20px;margin-top: 50px;font-size: 16px;">请输入密码:</li>
+                <li style="float: left;width: 50%;margin-top: 50px;"><input type="password"style="width: 200px;height: 30px;"></li>
+            </ul>
+            <ul style="list-style: none">
+                <li style="text-align: center;"><input type="button"value="进行验证"style="margin-top: 50px;display: inline-block;text-align: center"></li>
+            </ul>
+        </div>
+        <div style="display: none;"></div>
+    </div>
+</div>
+{# 报表显示 #}
+<script language="JavaScript">
+    $.get('/employee/',{'id':'1'},function (result,state,xhr) {
+        {# 日信息 #}
+        var list = [0,0,0,0,0,0,0,0,0,0,0,0];
+        var list_price = [0,0,0,0,0,0,0,0,0,0,0,0];
+        {# 月信息 #}
+        var month_number_list = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+        var month_price_list = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+        var month_day_list = [];
+        {# 年信息 #}
+        var year_number_list = [0,0,0,0,0,0,0,0,0,0,0,0];
+        var year_price_list = [0,0,0,0,0,0,0,0,0,0,0,0];
+        var year_month_list = [1,2,3,4,5,6,7,8,9,10,11,12];
+        for (var i in result.msg){
+            var time = result.msg[i].time.split('T');
+            {# 1.获取日期显示指定的内容 #}
+            if(time[0] == $('.data:eq(0)').val()){
+                for (var j=1;j<=12;j++){
+                    if(parseInt(time[1].split(':')[0])==j){
+                        if (j<8){
+                            list[j+4] += parseInt(result.msg[i].number);
+                            list_price[j+4] += parseFloat(result.msg[i].price)*parseInt(result.msg[i].number);
+                        }else {
+                            list[j-8] += parseInt(result.msg[i].number);
+                            list_price[j-8] += parseFloat(result.msg[i].price)*parseInt(result.msg[i].number);
+                        }
+                    }else {
+                    }
+                }
+            }
+            {# 2.获取月份的指定内容 #}
+            var month = time[0].split('-');
+            var month_list = [31,28,31,30,31,30,31,31,30,31,30,31];
+            {#判断是否是闰年#}
+            if((parseInt(month[0])/400==0)||((parseInt(month[0])/4==0)&&(parseInt(month[0])/100!=0))){
+                month_list[1] = 29;
+            }
+            if(time[0].split('-',2).join('-')==$('.data:eq(1)').val()){
+                for (var j=0;j <month_list[parseInt(month[1])-1];j++){
+                    month_day_list[j] = j+1;
+                    if(parseInt(month[2])==j+1){
+                        month_number_list[j] += parseInt(result.msg[i].number);
+                        month_price_list[j] += parseFloat(result.msg[i].price)*parseInt(result.msg[i].number);
+                    }else {
+                        month_number_list[j] += 0;
+                        month_price_list[j] += 0;
+                    }
+                }
+                month_number_list = month_number_list.slice(0,month_list[parseInt(month[1])-1])
+            }
+            {# 3.获取年份的指定内容 #}
+            var year = time[0].split('-');
+
+            if($('.data:eq(2)').children('option').text()==''){
+                var y = $('<option>'+year[0]+'</option>');
+                $('.data:eq(2)').append(y)
+            }
+            if(year[0]==$('.data:eq(2)').children('option').text()){
+                for(var j in year_month_list){
+                    if(parseInt(year[1])==year_month_list[j]){
+                    year_number_list[j] += parseInt(result.msg[i].number);
+                    year_price_list[j] += parseFloat(result.msg[i].price)*parseInt(result.msg[i].number);
+                }else {
+                    year_number_list[j] += 0;
+                    year_price_list[j] += 0;
+                }
+                }
+            }
+        }
+        {# 日信息 #}
+        $(document).ready(function () {
+            var chart = {
+                backgroundColor: '#444444',
+            };
+            var title = {
+                {#大标题#}
+                text:'卖出数量曲线图(day)',
+                useHTML:true,
+                style:{
+                    color:'#ffffff'
+                }
+            };
+            var subtitle = {
+                {#小标题#}
+                text:'Sell quantity curve ',
+                useHTML:true,
+                style:{
+                    color:'#ffffff'
+                }
+            };
+            var xAxis = {
+                categories:['8:00','9:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00'],
+                useHTML:true,
+                style:{
+                    color:'#ffffff'
+                }
+            };
+            var yAxis = {
+                title:{
+                    text: 'Number(杯)',
+                    useHTML:true,
+                    style:{
+                        color:'#ffffff'
+                    }
+                },
+                plotLines:[{
+                    value:0,
+                    width:2,
+                    color:'#454545'
+                }]
+            };
+            var tooltip = {
+                valueSuffix:'杯',
+
+            };
+            var series = [
+                {
+                    name:'Number',
+                    data:list,
+
+                }
+            ];
+            var json = {};
+            json.chart = chart;
+            json.title = title;
+            json.subtitle = subtitle;
+            json.xAxis = xAxis;
+            json.yAxis = yAxis;
+            json.tooltip = tooltip;
+            json.series = series;
+            $('#number').highcharts(json)
+        });
+        $(document).ready(function () {
+            var chart = {
+                backgroundColor: '#444444',
+            };
+            var title = {
+                text:'价格趋势图(day)',
+                useHTML:true,
+                style:{
+                    color:'#ffffff'
+                }
+            };
+            var subtitle = {
+                text: 'Price Trend Chart',
+                useHTML:true,
+                style:{
+                    color:'#ffffff'
+                }
+            };
+            var xAxis = {
+                categories:['8:00','9:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00'],
+                useHTML:true,
+                style:{
+                    color:'#ffffff'
+                }
+            };
+            var yAxis = {
+                title:{
+                    text:'Money(￥)',
+                    useHTML:true,
+                    style:{
+                        color:'#ffffff'
+                    }
+                },
+                plotLines:[{
+                    value:0,
+                    width:2,
+                    color: '#aaaaaa'
+                }]
+            };
+            var tooltip = {
+                valueSuffix:'￥'
+            };
+            var series = [{
+                name:'Money',
+                data:list_price,
+                useHTML:true,
+                style:{
+                    color:'#ffffff'
+                }
+            }];
+            var json = {};
+            json.chart = chart;
+            json.title = title;
+            json.subtitle = subtitle;
+            json.xAxis = xAxis;
+            json.yAxis = yAxis;
+            json.tooltip = tooltip;
+            json.series = series;
+
+            $('#price').highcharts(json);
+        });
+        {# 月信息 #}
+        $(document).ready(function () {
+            var chart = {
+                backgroundColor: '#444444',
+            };
+            var title = {
+                {#大标题#}
+                text:'卖出数量曲线图(month)',
+                useHTML:true,
+                style:{
+                    color:'#ffffff'
+                }
+            };
+            var subtitle = {
+                {#小标题#}
+                text:'Sell quantity curve ',
+                useHTML:true,
+                style:{
+                    color:'#ffffff'
+                }
+            };
+            var xAxis = {
+                categories:month_day_list
+            };
+            var yAxis = {
+                title:{
+                    text: 'Number(杯)',
+                    useHTML:true,
+                    style:{
+                        color:'#ffffff'
+                    }
+                },
+                plotLines:[{
+                    value:0,
+                    width:2,
+                    color:'#454545'
+                }]
+            };
+            var tooltip = {
+                valueSuffix:'杯'
+            };
+            var series = [
+                {
+                    name:'Number',
+                    data:month_number_list
+                }
+            ];
+            var json = {};
+            json.chart = chart;
+            json.title = title;
+            json.subtitle = subtitle;
+            json.xAxis = xAxis;
+            json.yAxis = yAxis;
+            json.tooltip = tooltip;
+            json.series = series;
+            $('#number_month').highcharts(json)
+        });
+        $(document).ready(function () {
+            var chart = {
+                backgroundColor: '#444444',
+            };
+            var title = {
+                text:'价格趋势图(month)',
+                useHTML:true,
+                style:{
+                    color:'#ffffff'
+                }
+            };
+            var subtitle = {
+                text: 'Price Trend Chart',
+                useHTML:true,
+                style:{
+                    color:'#ffffff'
+                }
+            };
+            var xAxis = {
+                categories:month_day_list
+            };
+            var yAxis = {
+                title:{
+                    text:'Money(￥)',
+                    useHTML:true,
+                    style:{
+                        color:'#ffffff'
+                    }
+                },
+                plotLines:[{
+                    value:0,
+                    width:2,
+                    color: '#aaaaaa'
+                }]
+            };
+            var tooltip = {
+                valueSuffix:'￥'
+            };
+            var series = [{
+                name:'Money',
+                data:month_price_list,
+            }];
+            var json = {};
+            json.chart = chart;
+            json.title = title;
+            json.subtitle = subtitle;
+            json.xAxis = xAxis;
+            json.yAxis = yAxis;
+            json.tooltip = tooltip;
+            json.series = series;
+
+            $('#price_month').highcharts(json);
+        });
+        {# 年信息 #}
+        $(document).ready(function () {
+            var chart = {
+                backgroundColor: '#444444',
+            };
+            var title = {
+                {#大标题#}
+                text:'卖出数量曲线图(year)',
+                useHTML:true,
+                style:{
+                    color:'#ffffff'
+                }
+            };
+            var subtitle = {
+                {#小标题#}
+                text:'Sell quantity curve ',
+                useHTML:true,
+                style:{
+                    color:'#ffffff'
+                }
+            };
+            var xAxis = {
+                categories:year_month_list
+            };
+            var yAxis = {
+                title:{
+                    text: 'Number(杯)',
+                    useHTML:true,
+                    style:{
+                        color:'#ffffff'
+                    }
+                },
+                plotLines:[{
+                    value:0,
+                    width:2,
+                    color:'#454545'
+                }]
+            };
+            var tooltip = {
+                valueSuffix:'杯'
+            };
+            var series = [
+                {
+                    name:'Number',
+                    data:year_number_list
+                }
+            ];
+            var json = {};
+            json.chart = chart;
+            json.title = title;
+            json.subtitle = subtitle;
+            json.xAxis = xAxis;
+            json.yAxis = yAxis;
+            json.tooltip = tooltip;
+            json.series = series;
+            $('#number_year').highcharts(json)
+        });
+        $(document).ready(function () {
+            var chart = {
+                backgroundColor: '#444444',
+            };
+            var title = {
+                text:'价格趋势图(year)',
+                useHTML:true,
+                style:{
+                    color:'#ffffff'
+                }
+            };
+            var subtitle = {
+                text: 'Price Trend Chart',
+                useHTML:true,
+                style:{
+                    color:'#ffffff'
+                }
+            };
+            var xAxis = {
+                categories:year_month_list
+            };
+            var yAxis = {
+                title:{
+                    text:'Money(￥)',
+                    useHTML:true,
+                    style:{
+                        color:'#ffffff'
+                    }
+                },
+                plotLines:[{
+                    value:0,
+                    width:2,
+                    color: '#aaaaaa'
+                }]
+            };
+            var tooltip = {
+                valueSuffix:'￥'
+            };
+            var series = [{
+                name:'Money',
+                data:year_price_list,
+            }];
+            var json = {};
+            json.chart = chart;
+            json.title = title;
+            json.subtitle = subtitle;
+            json.xAxis = xAxis;
+            json.yAxis = yAxis;
+            json.tooltip = tooltip;
+            json.series = series;
+
+            $('#price_year').highcharts(json);
+        });
+        });
+    {# 请求 #}
+    $('.data').change(function () {
+        $.get('/employee/',{'id':'1'},function (result,state,xhr) {
+        {# 日信息 #}
+        var list = [0,0,0,0,0,0,0,0,0,0,0,0];
+        var list_price = [0,0,0,0,0,0,0,0,0,0,0,0];
+        {# 月信息 #}
+        var month_number_list = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+        var month_price_list = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+        var month_day_list = [];
+        {# 年信息 #}
+        var year_number_list = [0,0,0,0,0,0,0,0,0,0,0,0];
+        var year_price_list = [0,0,0,0,0,0,0,0,0,0,0,0];
+        var year_month_list = [1,2,3,4,5,6,7,8,9,10,11,12];
+        for (var i in result.msg){
+            var time = result.msg[i].time.split('T');
+            {# 1.获取日期显示指定的内容 #}
+            if(time[0] == $('.data:eq(0)').val()){
+                for (var j=1;j<=12;j++){
+                    if(parseInt(time[1].split(':')[0])==j){
+                        if (j<8){
+                            list[j+4] += parseInt(result.msg[i].number);
+                            list_price[j+4] += parseFloat(result.msg[i].price)*parseInt(result.msg[i].number);
+                        }else {
+                            list[j-8] += parseInt(result.msg[i].number);
+                            list_price[j-8] += parseFloat(result.msg[i].price)*parseInt(result.msg[i].number);
+                        }
+                    }else {
+                    }
+                }
+            }
+            {# 2.获取月份的指定内容 #}
+            var month = time[0].split('-');
+            var month_list = [31,28,31,30,31,30,31,31,30,31,30,31];
+            {#判断是否是闰年#}
+            if((parseInt(month[0])/400==0)||((parseInt(month[0])/4==0)&&(parseInt(month[0])/100!=0))){
+                month_list[1] = 29;
+            }
+            if(time[0].split('-',2).join('-')==$('.data:eq(1)').val()){
+                for (var j=0;j <month_list[parseInt(month[1])-1];j++){
+                    month_day_list[j] = j+1;
+                    if(parseInt(month[2])==j+1){
+                        month_number_list[j] += parseInt(result.msg[i].number);
+                        month_price_list[j] += parseFloat(result.msg[i].price)*parseInt(result.msg[i].number);
+                    }else {
+                        month_number_list[j] += 0;
+                        month_price_list[j] += 0;
+                    }
+                }
+                month_number_list = month_number_list.slice(0,month_list[parseInt(month[1])-1])
+            }
+            {# 3.获取年份的指定内容 #}
+            var year = time[0].split('-');
+
+            if($('.data:eq(2)').children('option').text()==''){
+                var y = $('<option>'+year[0]+'</option>');
+                $('.data:eq(2)').append(y)
+            }
+            if(year[0]==$('.data:eq(2)').children('option').text()){
+                for(var j in year_month_list){
+                    if(parseInt(year[1])==year_month_list[j]){
+                    year_number_list[j] += parseInt(result.msg[i].number);
+                    year_price_list[j] += parseFloat(result.msg[i].price)*parseInt(result.msg[i].number);
+                }else {
+                    year_number_list[j] += 0;
+                    year_price_list[j] += 0;
+                }
+                }
+            }
+        }
+        {# 日信息 #}
+        $(document).ready(function () {
+            var chart = {
+                backgroundColor: '#444444',
+            };
+            var title = {
+                {#大标题#}
+                text:'卖出数量曲线图(day)',
+                useHTML:true,
+                style:{
+                    color:'#ffffff'
+                }
+            };
+            var subtitle = {
+                {#小标题#}
+                text:'Sell quantity curve ',
+                useHTML:true,
+                style:{
+                    color:'#ffffff'
+                }
+            };
+            var xAxis = {
+                categories:['8:00','9:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00'],
+                useHTML:true,
+                style:{
+                    color:'#ffffff'
+                }
+            };
+            var yAxis = {
+                title:{
+                    text: 'Number(杯)',
+                    useHTML:true,
+                    style:{
+                        color:'#ffffff'
+                    }
+                },
+                plotLines:[{
+                    value:0,
+                    width:2,
+                    color:'#454545'
+                }]
+            };
+            var tooltip = {
+                valueSuffix:'杯',
+
+            };
+            var series = [
+                {
+                    name:'Number',
+                    data:list,
+
+                }
+            ];
+            var json = {};
+            json.chart = chart;
+            json.title = title;
+            json.subtitle = subtitle;
+            json.xAxis = xAxis;
+            json.yAxis = yAxis;
+            json.tooltip = tooltip;
+            json.series = series;
+            $('#number').highcharts(json)
+        });
+        $(document).ready(function () {
+            var chart = {
+                backgroundColor: '#444444',
+            };
+            var title = {
+                text:'价格趋势图(day)',
+                useHTML:true,
+                style:{
+                    color:'#ffffff'
+                }
+            };
+            var subtitle = {
+                text: 'Price Trend Chart',
+                useHTML:true,
+                style:{
+                    color:'#ffffff'
+                }
+            };
+            var xAxis = {
+                categories:['8:00','9:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00'],
+                useHTML:true,
+                style:{
+                    color:'#ffffff'
+                }
+            };
+            var yAxis = {
+                title:{
+                    text:'Money(￥)',
+                    useHTML:true,
+                    style:{
+                        color:'#ffffff'
+                    }
+                },
+                plotLines:[{
+                    value:0,
+                    width:2,
+                    color: '#aaaaaa'
+                }]
+            };
+            var tooltip = {
+                valueSuffix:'￥'
+            };
+            var series = [{
+                name:'Money',
+                data:list_price,
+                useHTML:true,
+                style:{
+                    color:'#ffffff'
+                }
+            }];
+            var json = {};
+            json.chart = chart;
+            json.title = title;
+            json.subtitle = subtitle;
+            json.xAxis = xAxis;
+            json.yAxis = yAxis;
+            json.tooltip = tooltip;
+            json.series = series;
+
+            $('#price').highcharts(json);
+        });
+        {# 月信息 #}
+        $(document).ready(function () {
+            var chart = {
+                backgroundColor: '#444444',
+            };
+            var title = {
+                {#大标题#}
+                text:'卖出数量曲线图(month)',
+                useHTML:true,
+                style:{
+                    color:'#ffffff'
+                }
+            };
+            var subtitle = {
+                {#小标题#}
+                text:'Sell quantity curve ',
+                useHTML:true,
+                style:{
+                    color:'#ffffff'
+                }
+            };
+            var xAxis = {
+                categories:month_day_list
+            };
+            var yAxis = {
+                title:{
+                    text: 'Number(杯)',
+                    useHTML:true,
+                    style:{
+                        color:'#ffffff'
+                    }
+                },
+                plotLines:[{
+                    value:0,
+                    width:2,
+                    color:'#454545'
+                }]
+            };
+            var tooltip = {
+                valueSuffix:'杯'
+            };
+            var series = [
+                {
+                    name:'Number',
+                    data:month_number_list
+                }
+            ];
+            var json = {};
+            json.chart = chart;
+            json.title = title;
+            json.subtitle = subtitle;
+            json.xAxis = xAxis;
+            json.yAxis = yAxis;
+            json.tooltip = tooltip;
+            json.series = series;
+            $('#number_month').highcharts(json)
+        });
+        $(document).ready(function () {
+            var chart = {
+                backgroundColor: '#444444',
+            };
+            var title = {
+                text:'价格趋势图(month)',
+                useHTML:true,
+                style:{
+                    color:'#ffffff'
+                }
+            };
+            var subtitle = {
+                text: 'Price Trend Chart',
+                useHTML:true,
+                style:{
+                    color:'#ffffff'
+                }
+            };
+            var xAxis = {
+                categories:month_day_list
+            };
+            var yAxis = {
+                title:{
+                    text:'Money(￥)',
+                    useHTML:true,
+                    style:{
+                        color:'#ffffff'
+                    }
+                },
+                plotLines:[{
+                    value:0,
+                    width:2,
+                    color: '#aaaaaa'
+                }]
+            };
+            var tooltip = {
+                valueSuffix:'￥'
+            };
+            var series = [{
+                name:'Money',
+                data:month_price_list,
+            }];
+            var json = {};
+            json.chart = chart;
+            json.title = title;
+            json.subtitle = subtitle;
+            json.xAxis = xAxis;
+            json.yAxis = yAxis;
+            json.tooltip = tooltip;
+            json.series = series;
+
+            $('#price_month').highcharts(json);
+        });
+        {# 年信息 #}
+        $(document).ready(function () {
+            var chart = {
+                backgroundColor: '#444444',
+            };
+            var title = {
+                {#大标题#}
+                text:'卖出数量曲线图(year)',
+                useHTML:true,
+                style:{
+                    color:'#ffffff'
+                }
+            };
+            var subtitle = {
+                {#小标题#}
+                text:'Sell quantity curve ',
+                useHTML:true,
+                style:{
+                    color:'#ffffff'
+                }
+            };
+            var xAxis = {
+                categories:year_month_list
+            };
+            var yAxis = {
+                title:{
+                    text: 'Number(杯)',
+                    useHTML:true,
+                    style:{
+                        color:'#ffffff'
+                    }
+                },
+                plotLines:[{
+                    value:0,
+                    width:2,
+                    color:'#454545'
+                }]
+            };
+            var tooltip = {
+                valueSuffix:'杯'
+            };
+            var series = [
+                {
+                    name:'Number',
+                    data:year_number_list
+                }
+            ];
+            var json = {};
+            json.chart = chart;
+            json.title = title;
+            json.subtitle = subtitle;
+            json.xAxis = xAxis;
+            json.yAxis = yAxis;
+            json.tooltip = tooltip;
+            json.series = series;
+            $('#number_year').highcharts(json)
+        });
+        $(document).ready(function () {
+            var chart = {
+                backgroundColor: '#444444',
+            };
+            var title = {
+                text:'价格趋势图(year)',
+                useHTML:true,
+                style:{
+                    color:'#ffffff'
+                }
+            };
+            var subtitle = {
+                text: 'Price Trend Chart',
+                useHTML:true,
+                style:{
+                    color:'#ffffff'
+                }
+            };
+            var xAxis = {
+                categories:year_month_list
+            };
+            var yAxis = {
+                title:{
+                    text:'Money(￥)',
+                    useHTML:true,
+                    style:{
+                        color:'#ffffff'
+                    }
+                },
+                plotLines:[{
+                    value:0,
+                    width:2,
+                    color: '#aaaaaa'
+                }]
+            };
+            var tooltip = {
+                valueSuffix:'￥'
+            };
+            var series = [{
+                name:'Money',
+                data:year_price_list,
+            }];
+            var json = {};
+            json.chart = chart;
+            json.title = title;
+            json.subtitle = subtitle;
+            json.xAxis = xAxis;
+            json.yAxis = yAxis;
+            json.tooltip = tooltip;
+            json.series = series;
+
+            $('#price_year').highcharts(json);
+        });
+        });
+    })
+</script>
+</body>
+</html>

@@ -1,0 +1,201 @@
+﻿@charset "gb2312";
+
+/*CSS black style pagination*/
+
+DIV.black {
+
+FONT-SIZE: 80%;
+PADDING-BOTTOM: 30px;
+COLOR: #a0a0a0;
+PADDING-TOP: 58px;
+TEXT-ALIGN: center;
+font-size: 14px;
+margin: auto 0;
+}
+DIV.black2 {
+	/* PADDING-RIGHT: 3px;
+	PADDING-LEFT: 3px;
+	FONT-SIZE: 80%;
+	PADDING-BOTTOM: 10px;
+	MARGIN: 3px; COLOR: #a0a0a0; PADDING-TOP: 10px;  TEXT-ALIGN: center*/
+	FONT-SIZE: 80%;
+	PADDING-BOTTOM: 30px;
+	COLOR: #a0a0a0;
+	PADDING-TOP: 861px;
+	TEXT-ALIGN: center;
+	margin: auto 0;
+}
+DIV.black A {
+	BORDER-RIGHT: #909090 1px solid;
+	PADDING-RIGHT: 5px;
+	BACKGROUND-POSITION: 50% bottom;
+	BORDER-TOP: #909090 1px solid;
+	PADDING-LEFT: 5px; /*BACKGROUND-IMAGE: url(../images/bar.gif);*/
+	PADDING-BOTTOM: 2px;
+	BORDER-LEFT: #909090 1px solid;
+	COLOR: #c0c0c0;
+	MARGIN-RIGHT: 3px;
+	PADDING-TOP: 2px;
+	BORDER-BOTTOM: #909090 1px solid;
+	TEXT-DECORATION: none
+}
+DIV.black A:hover {
+	BORDER-RIGHT: #f0f0f0 1px solid;
+	BORDER-TOP: #f0f0f0 1px solid;
+	BACKGROUND-IMAGE: url(../images/invbar.gif);
+	BORDER-LEFT: #f0f0f0 1px solid;
+	COLOR: #ffffff;
+	BORDER-BOTTOM: #f0f0f0 1px solid;
+	BACKGROUND-COLOR: #404040
+}
+DIV.black A:active {
+	BORDER-RIGHT: #f0f0f0 1px solid;
+	BORDER-TOP: #f0f0f0 1px solid;
+	BACKGROUND-IMAGE: url(../images/invbar.gif);
+	BORDER-LEFT: #f0f0f0 1px solid; COLOR: #ffffff;
+	BORDER-BOTTOM: #f0f0f0 1px solid;
+	BACKGROUND-COLOR: #404040
+}
+DIV.black SPAN.thisclass {
+	BORDER-RIGHT: #ffffff 1px solid;
+	PADDING-RIGHT: 5px;
+	BORDER-TOP: #ffffff 1px solid;
+	PADDING-LEFT: 5px;
+	FONT-WEIGHT: bold;
+	PADDING-BOTTOM: 2px;
+	BORDER-LEFT: #ffffff 1px solid;
+	COLOR: #ffffff;
+	MARGIN-RIGHT: 3px;
+	PADDING-TOP: 2px;
+	BORDER-BOTTOM: #ffffff 1px solid;
+	BACKGROUND-COLOR: #606060
+}
+DIV.black SPAN.disabled {
+	BORDER-RIGHT: #606060 1px solid;
+	PADDING-RIGHT: 5px;
+	BORDER-TOP: #606060 1px solid;
+	PADDING-LEFT: 5px;
+	PADDING-BOTTOM: 2px;
+	BORDER-LEFT: #606060 1px solid;
+	COLOR: #808080;
+	MARGIN-RIGHT: 3px;
+	PADDING-TOP: 2px;
+	BORDER-BOTTOM: #606060 1px solid
+}
+
+
+
+
+/*CSS black2 style pagination*/
+
+DIV.black2 {
+	PADDING-RIGHT: 7px;
+	PADDING-LEFT: 7px;
+	PADDING-BOTTOM: 7px;
+	MARGIN: 3px;
+	PADDING-TOP: 7px;
+	TEXT-ALIGN: center
+}
+DIV.black2 A {
+	BORDER-RIGHT: #000000 1px solid;
+	PADDING-RIGHT: 5px;
+	BORDER-TOP: #000000 1px solid;
+	PADDING-LEFT: 5px;
+	PADDING-BOTTOM: 2px;
+	MARGIN: 2px;
+	BORDER-LEFT: #000000 1px solid;
+	COLOR: #000000;
+	PADDING-TOP: 2px;
+	BORDER-BOTTOM: #000000 1px solid;
+	TEXT-DECORATION: none
+}
+DIV.black2 A:hover {
+	BORDER-RIGHT: #000000 1px solid;
+	BORDER-TOP: #000000 1px solid;
+	BORDER-LEFT: #000000 1px solid;
+	COLOR: #fff;
+	BORDER-BOTTOM: #000000 1px solid;
+	BACKGROUND-COLOR: #000
+}
+DIV.black2 A:active {
+	BORDER-RIGHT: #000000 1px solid;
+	BORDER-TOP: #000000 1px solid;
+	BORDER-LEFT: #000000 1px solid;
+	COLOR: #fff;
+	BORDER-BOTTOM: #000000 1px solid;
+	BACKGROUND-COLOR: #000
+}
+DIV.black2 SPAN.thisclass {
+	BORDER-RIGHT: #000000 1px solid;
+	PADDING-RIGHT: 5px;
+	BORDER-TOP: #000000 1px solid;
+	PADDING-LEFT: 5px;
+	FONT-WEIGHT: bold;
+	PADDING-BOTTOM: 2px;
+	MARGIN: 2px;
+	BORDER-LEFT: #000000 1px solid;
+	COLOR: #fff;
+	PADDING-TOP: 2px;
+	BORDER-BOTTOM: #000000 1px solid;
+	BACKGROUND-COLOR: #000000
+}
+DIV.black2 SPAN.disabled {
+	BORDER-RIGHT: #eee 1px solid;
+	PADDING-RIGHT: 5px;
+	BORDER-TOP: #eee 1px solid;
+	PADDING-LEFT: 5px;
+	PADDING-BOTTOM: 2px;
+	MARGIN: 2px;
+	BORDER-LEFT: #eee 1px solid;
+	COLOR: #ddd;
+	PADDING-TOP: 2px;
+	BORDER-BOTTOM: #eee 1px solid
+}
+
+
+
+
+/*CSS black-red style pagination*/
+
+DIV.black-red {
+	FONT-SIZE: 11px;
+	COLOR: #fff;
+	FONT-FAMILY: Tahoma, Arial, Helvetica, Sans-serif;
+	BACKGROUND-COLOR: #3e3e3e
+}
+DIV.black-red A {
+	PADDING-RIGHT: 5px;
+	PADDING-LEFT: 5px;
+	PADDING-BOTTOM: 2px;
+	MARGIN: 2px; COLOR: #fff;
+	PADDING-TOP: 2px;
+	BACKGROUND-COLOR: #3e3e3e;
+	TEXT-DECORATION: none
+}
+DIV.black-red A:hover {
+	COLOR: #fff;
+	BACKGROUND-COLOR: #ec5210
+}
+DIV.black-red A:active {
+	COLOR: #fff;
+	BACKGROUND-COLOR: #ec5210
+}
+DIV.black-red SPAN.thisclass {
+	PADDING-RIGHT: 5px;
+	PADDING-LEFT: 5px;
+	FONT-WEIGHT: bold;
+	PADDING-BOTTOM: 2px;
+	MARGIN: 2px;
+	COLOR: #fff;
+	PADDING-TOP: 2px;
+	BACKGROUND-COLOR: #313131
+}
+DIV.black-red SPAN.disabled {
+	PADDING-RIGHT: 5px;
+	PADDING-LEFT: 5px;
+	PADDING-BOTTOM: 2px;
+	MARGIN: 2px;
+	COLOR: #868686;
+	PADDING-TOP: 2px;
+	BACKGROUND-COLOR: #3e3e3e
+}

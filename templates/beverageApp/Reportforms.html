@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+{#    <meta http-equiv="refresh" content="2">#}
+    <title>支付成功</title>
+    <style>
+        #contentTb
+        {
+            width: 1000px;
+            min-height: 25px;
+            line-height: 25px;
+            text-align: center;
+            border-collapse: collapse;
+            margin: 0px auto;
+
+
+        }
+         #contentTb tr td
+        {
+            border:1px solid #000000;
+
+        }
+        a:hover{
+            color: red;
+        }
+    </style>
+    <script type="text/javascript" src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <script type="text/javascript"src="{% static 'js/highcharts.js' %}"></script>
+    <script type="text/javascript">
+        $(function () {
+             for(var item in $('.state').text()){
+                 if($('.state').eq(item).text()=='0'){
+                     $('.state').eq(item).text('未完成')
+                 }else if($('.state').eq(item).text()=='1'){
+                     $('.state').eq(item).text('已完成')
+                 }
+             }
+             setInterval(function () {
+                 $.get('/reportforms/',{'state':200},function (result,state,xhl) {
+                     var table =$('table').html('<tr class="contentTb">' +
+                         '            <td>商品编号</td>' +
+                         '            <td>产品名称</td>' +
+                         '            <td>单价</td>' +
+                         '            <td>折扣</td>' +
+                         '            <td>数量</td>' +
+                         '            <td>合计</td>' +
+                         '            <td>状态</td>' +
+                         '            <td>提交</td>' +
+                         '        </tr>');
+                     for (var i in result.rep){
+                         table.append('<tr class="contentTb">' +
+                             '            <td>'+result.rep[i].proudect_id+'</td>' +
+                             '            <td>'+result.rep[i].product+'</td>' +
+                             '            <td>'+result.rep[i].price+'</td>' +
+                             '            <td>'+result.rep[i].rebate+'</td>' +
+                             '            <td>'+result.rep[i].number+'</td>' +
+                             '            <td>'+result.rep[i].z_price+'</td>' +
+                             '            <td class="state">'+result.rep[i].state+'</td>' +
+                             '            <td><input type="button"value="提交"style="width: 100%;"><b style="display: none;">'+result.rep[i].id+'</b></td>' +
+                             '        </tr>')
+                     }
+                     for(var item in $('.state').text()){
+                         if($('.state').eq(item).text()=='0'){
+                             $('.state').eq(item).text('未完成')
+                         }else if($('.state').eq(item).text()=='1'){
+                             $('.state').eq(item).text('已完成')
+                         }
+                     }
+                     $('input:button').click(function () {
+                     console.log('nihaoo');
+                     console.log($(this).parent('tr').text());
+                     $.post('/reportforms/',{'csrfmiddlewaretoken':"{{ csrf_token }}",'id': $(this).next('b').text()},function (result,state,shr) {
+                         alert(result.msg)
+                            })
+                        });
+                     {#console.log(window.document);#}
+                     {#console.log('/<body style="background:#daf4ff;">/'.exec(result));#}
+                     {#console.log(result[result.search('<body style="background:#daf4ff;">')])#}
+                 });
+
+                 },
+                 2000);
+             $('input:button').click(function () {
+                 console.log('nihaoo');
+                 console.log($(this).parent('tr').text());
+                 $.post('/reportforms/',{'csrfmiddlewaretoken':"{{ csrf_token }}",'id': $(this).next('b').text()},function (result,state,shr) {
+                     alert(result.msg)
+                 })
+             })
+        })
+    </script>
+</head>
+<body style="background:#daf4ff;">
+
+<h3 style="text-align: center">订单信息</h3>
+
+    <table id="contentTb">
+    <div style="width: 1000px;margin: 0 auto;">
+            <a href="/employee/"><input style="width: 100px;height: 30px;cursor:pointer;" type="button" value="已完成订单"></a>
+            <a href="/reportforms/"><input style="width: 100px;height: 30px;cursor: pointer;"type="button" value="未完成订单"></a>
+            <li style="list-style: none;float: right;">欢迎你:{{ name }}&nbsp;&nbsp;&nbsp;&nbsp;<a href="/logout/" style="cursor: pointer;">注销</a></li>
+    </div>
+        <tr class="contentTb">
+            <td>商品编号</td>
+            <td>产品名称</td>
+            <td>单价</td>
+            <td>折扣</td>
+            <td>数量</td>
+            <td>合计</td>
+            <td>状态</td>
+            <td>提交</td>
+        </tr>
+        {% for item in rep %}
+            <tr class="contentTb">
+            <td>{{ item.proudect_id}}</td>
+            <td>{{ item.product }}</td>
+            <td>{{ item.price }}</td>
+            <td>{{ item.rebate }}</td>
+            <td>{{ item.number }}</td>
+            <td>{{ item.z_price }}</td>
+            <td class="state">{{ item.state }}</td>
+            <td><input type="button"value="提交"style="width: 100%;"><b style="display: none;">{{ item.id }}</b></td>
+        </tr>
+        {% endfor %}
+    </table>
+<div id="container"style="width: 550px;height: 400px;margin: 0 auto;"></div>
+<script language="JavaScript">
+    $(document).ready(function () {
+        var chart = {
+            {#图标区选项#}
+            backgroundColor:'pink',
+            borderRadius: 30,
+            plotBackgroundColor:'green',
+        };
+        var title={
+            text:'订单曲线图'
+        {#    标题#}
+        };
+        var subtitle = {
+            text:'Order curve '
+        {#    小标题#}
+        };
+        var xAxis = {
+            categories:['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月']
+        {#    x坐标#}
+        };
+        var yAxis = {
+            title:{
+                text: 'Temperature(℃)'
+            {#    y轴的标题#}
+            },
+            plotLines:[{
+                value:0,
+                width:1,
+                color:'red',
+            }]
+        };
+        var tooltip = {
+        {# 数据点提示框 #}
+            valueSuffix:'℃',
+            backgroundColor:'red',
+
+        };
+        var legend = {
+            {# 图列选项 #}
+            layout:'vertical',
+            align:'right',
+            backgroundColor:'red',
+            verticalAlign: 'middle',
+            borderRadius:20,
+            borderWidth:0,
+        };
+        var serics = [
+            {
+                name:'Tokyo',
+                data:[7.0, 6.9, 9.5, 14.5, 18.2, 21.5, 25.2,
+            26.5, 23.3, 18.3, 13.9, 9.6]
+            },
+            {
+                 name: 'New York',
+                 data: [-0.2, 0.8, 5.7, 11.3, 17.0, 22.0, 24.8,
+            24.1, 20.1, 14.1, 8.6, 2.5]
+          },
+          {
+                 name: 'Berlin',
+                 data: [-0.9, 0.6, 3.5, 8.4, 13.5, 17.0, 18.6,
+            17.9, 14.3, 9.0, 3.9, 1.0]
+          },
+          {
+                 name: 'London',
+                 data: [3.9, 4.2, 5.7, 8.5, 11.9, 15.2, 17.0,
+            16.6, 14.2, 10.3, 6.6, 4.8]
+          }
+        ];
+        var json = {};
+        json.title = title;{# 标题 #}
+
+        json.subtitle = subtitle;{# 小标题 #}
+        json.xAxis = xAxis;{# x轴 #}
+        json.yAxis = yAxis;{# y轴 #}
+        json.tooltip = tooltip;{# 表 #}
+        json.legend = legend;{#  #}
+        json.series = serics;{# 画图 #}
+        json.chart = chart;
+        $('#container').highcharts(json);
+    });
+</script>
+</body>
+</html>

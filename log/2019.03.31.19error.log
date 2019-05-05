@@ -1,0 +1,19 @@
+[2019-03-31 19:31:15,649][Thread-2:18852][task_id:django.request][log.py:228][ERROR][Internal Server Error: /]
+Traceback (most recent call last):
+  File "D:\PYTHON\myproject\beverageApp\views.py", line 61, in index
+    data = int('你好?')
+ValueError: invalid literal for int() with base 10: '你好?'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\PYTHON\beverage\venv\lib\site-packages\django\core\handlers\exception.py", line 34, in inner
+    response = get_response(request)
+  File "D:\PYTHON\beverage\venv\lib\site-packages\django\core\handlers\base.py", line 126, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "D:\PYTHON\beverage\venv\lib\site-packages\django\core\handlers\base.py", line 124, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "D:\PYTHON\myproject\beverageApp\views.py", line 65, in index
+    logging.ERROR(ex)
+TypeError: 'int' object is not callable
+[2019-03-31 19:31:15,654][Thread-2:18852][task_id:django.server][basehttp.py:154][ERROR]["GET / HTTP/1.1" 500 76526]

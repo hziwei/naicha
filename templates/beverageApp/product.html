@@ -1,0 +1,135 @@
+{% extends 'beverageApp/base.html' %}
+{% block content %}
+    <script type="text/javascript">
+        $(function () {
+            $('.product_Type').click(function () {
+                $.get('/product',{'type_ID':$(this).children('b').text()},function (result,state,xhr) {
+                    {#console.log(result)#}
+                    var data = JSON.parse(result.msg);
+                    var prod = $('.product_Details').html('');
+                    prod.css({'overflow':'hidden','padding':'0px'});
+                    for (var item in data){
+                        prod.append($('<li>' +
+                            '      <a class="example-image-link" href="/product/'+data[item]['pk']+'/" title="<b>抹茶燕麦</b>">\n' +
+                            '       <img src="/'+data[item]['fields']['product_img']+'" alt="<b>抹茶燕麦</b>">\n' +
+                            '         </a>\n' +
+                            '         <p><b>'+data[item]['fields']['product_name']+'</b></p>\n' +
+                            '      </li>'));
+                        {#console.log(data[item])#}
+                    }
+                    console.log(result.page_list);
+                    var page = $('.thisclass').children('b').html('')
+                    for (var item in result.page_list){
+                        page.append($('<span style="width: 20px;height: 20px;background: #ffffff;display: inline-block;">'+result.page_list[item]+'</span>'))
+                    }
+                })
+            })
+        })
+    </script>
+    <!--基模板的样式-->
+	<link rel="stylesheet" type="text/css" href="/static/css/base.css">
+    <!--分页样式-->
+    <link href="/static/css/pagelist.css" type="text/css" rel="stylesheet">
+
+	<link rel="stylesheet" type="text/css" href="/static/css/hz.css">
+
+    <link rel="stylesheet" type="text/css" href="/static/css/product-list-items.css">
+{#    产品导航的大小样式#}
+    <style>@-webkit-keyframes
+           unfold{0%{-webkit-transform: rotateX(180deg);}
+               50%{-webkit-transform: rotateX(-30deg);}
+               100%{-webkit-transform: rotateX(0deg);}}
+    </style>
+{#    产品导航的下拉样式#}
+    <style>@-webkit-keyframes
+           unfold-first{0%{-webkit-transform: rotateX(-90deg);}
+               50%{-webkit-transform: rotateX(60deg);}
+               100%{-webkit-transform: rotateX(0deg);}}
+    </style>
+
+    <style>.node {position: relative;display: block;}</style>
+    <style>.face {pointer-events: none;position: absolute;display: block;height: 100%;width: 100%;left: 0;top: 0;}
+    </style>
+    <div class="product-list-items" style="position: relative; top: 80px;">
+        <dl class="items open" style="transform: perspective(1200px);">
+            <a href="/product"><dt>美味产品</dt></a>
+               <!----- <dd><a href="/xiaji/">夏季新品</a></dd>---未启用-->
+            <span class="node root" style="transform-origin: 50% 0% 0px; transform-style: preserve-3d;
+            animation: swing-out 1.26s ease-in-out 0s 1 normal forwards running;">
+                {% for foo in typeId %}
+                    <span class="node" style="transform-origin: 50% 0% 0px; transform-style: preserve-3d;
+                    animation: unfold-first 1.2s ease-in-out 0s 1 normal forwards running; transform: rotateX(180deg);">
+                        <dd style="position: relative; transform-style: preserve-3d; transform: translateZ(-0.1px);">
+                            <a class="product_Type">{{ foo.type_name}}<b style="display: none">{{ foo.id }}</b></a>
+
+                        </dd>
+                        <span class="node" style="transform-origin: 50% 0% 0px; transform-style: preserve-3d;
+                        animation: unfold 1.2s ease-in-out 0.18s 1 normal forwards running; transform: rotateX(180deg);">
+                {% endfor %}
+                </span>
+                </span>
+            </span>
+        </dl>
+    </div>
+    <script>
+        if ( $.fn.makisu.enabled ) {
+            var $p_items = $( '.product-list-items .items' );
+            $p_items.makisu({
+                selector: 'dd',
+                overlap: 0.85,
+                speed: 1.2
+            });
+            $( '.product-list-items .items' ).makisu( 'open' );
+        } else {
+        }
+    </script>
+    <div class="lcbox comm clearfix">
+        <div class="clr fr">
+            <div class="picbox ice">
+                <ul class="product_Details" >
+                    {% for item in proId.0 %}
+                    <li>
+                        <a class="example-image-link" href="/product/{{ item.id }}" title="<b>{{ item.product_name }}</b>">
+                            <img src="/{{ item.product_img }}" alt="<b>{{ item.product_name }}</b>">
+                        </a>
+                        <p><b>{{ item.product_name }}</b></p>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {# 修改分页样式 #}
+            <style type="text/css">
+                .pagefoot{
+
+                }
+            </style>
+                <script type="text/javascript">
+                    $(function () {
+                        console.log('fdgh');
+                        $('.pagefoot').eq(0).css({'color:':'#fff','background':'#000',});
+                        $('.pagefoot').click(function () {
+                            $('.pagefoot').css({'background':'#000','color:':'#fff'});
+                            $(this).css({'background':'#ffffff','color:':'#000'});
+                        })
+                    })
+                </script>
+                <div class="black">
+                    <ul class="list thisclass">
+                        <a href="/product/?page=1">
+                                <span class="pagefoot" style="width: 40px;height: 20px;background: #fff;display: inline-block;">首页</span>
+                            </a>
+                        <b>
+                        {% for item in proId.1 %}
+                            <a href="/product/?page={{ item }}">
+                                <span class="pagefoot" style="width: 20px;height: 20px;background: #fff;display: inline-block;">{{ item }}</span>
+                            </a>
+                        {% endfor %}
+                        </b>
+{#                        <a href="/product/?page={{ proId.2|add:1 }}">下一页</a>#}
+                        <a href="/product/?page={{ proId.1|length }}">末页</a>
+                    </ul>
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
